@@ -161,7 +161,9 @@ class Scene1 extends AdventureScene {
             .on('pointerdown', () => {
                 this.checkBounds(this.knight, this.boundsDoor);
                 if (this.inZone == true && this.inventory.includes('key')) {
-                    this.gotoScene(Scene2);
+                    this.loseItem("cloak");
+                    this.loseItem("key");
+                    this.gotoScene("Scene2");
 
                 } else if (!this.inventory.includes('key')) {
                     this.showMessage("You should probably get the key...")
@@ -210,6 +212,7 @@ class Scene2 extends AdventureScene {
         super("Scene2", "Hallway");
     }
     onEnter() {
+
         this.add.text(this.w * 0.3, this.w * 0.4, "just go back")
             .setFontSize(this.s * 2)
             .setInteractive()
