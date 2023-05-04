@@ -15,6 +15,8 @@ class Scene1 extends AdventureScene {
         this.load.image("cloak2", "cloakOutline.png");
         this.load.image("trollKey", "trollWithKey.png");
         this.load.image("trollOutline", "trollWithKeyOutline.png");
+        this.load.image("door", "door.png");
+        this.load.image("doorOutline", "doorOutline.png");
     }
 
     onEnter() {
@@ -62,17 +64,44 @@ class Scene1 extends AdventureScene {
             .setCollideWorldBounds(true);
         
 
-
+        this.trollOutline = this.add.sprite(this.tile*11.5, this.tile *8, "trollOutline")
+            .setOrigin(0,1)
+            .setAlpha(0);
+        
+        let keyGot = false
         this.troll01 = this.add.sprite(this.tile * 11.5, this.tile * 8, "trollKey")
             .setOrigin(0, 1)
             .setInteractive()
             .on('pointerover', () => {
-                this.showMessage("Looks like this goober has a key... Maybe there's a way to sneak it off him?")
-                this.trollOutline = this.add.image(this.tile*11.5, this.tile *8, "trollOutline")
-                this.trollOutline.setOrigin(0,1)
+                this.trollOutline.setAlpha(1);
+                if (keyGot == false) {
+                    this.showMessage("Looks like this goober has a key... Maybe there's a way to sneak it off him?")
+                    this.boundsTroll = this.physics.add.image(this.tile * 11.5, this.tile * 8, "cloak").setScale(3).setAlpha(0);
+                } else {
+                    this.showMessage("A Stinkier guy. A cretin.")
+                }
             })
             .on('pointerout', () => {
-                this.trollOutline.destroy()
+                this.trollOutline.setAlpha(0)
+                this.boundsTroll.destroy()
+            })
+            .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsTroll);
+                if (this.inZone == true && this.inventory.includes('cloak')) {
+                    this.showMessage("You steal the key.");
+                    this.gainItem('key');
+                    this.troll01.setTexture('troll');
+                    this.trollOutline.setTexture('troll');
+                    this.trollOutline.destroy();
+                    this.boundsTroll.destroy();
+                    this.inZone = false;
+                    this.troll01 = this.troll02;
+                    keyGot = true
+                } else if (!this.inventory.includes('cloak')) {
+                    this.showMessage("You should probably get a disguise...")
+                } else {
+                    this.showMessage("Get closer.");
+                }
             });
         
         this.troll02 = this.add.sprite(this.tile * 12.5, this.tile * 8, "troll")
@@ -87,13 +116,15 @@ class Scene1 extends AdventureScene {
                 this.showMessage("A raggedy cloak, perfect for sneaking.")
                 console.log("once");
                 this.cloak2 = this.add.image(this.w*0.30, this.w*0.47, "cloak2");
-                this.bounds = this.physics.add.image(this.w * 0.30, this.w*0.47, "cloak").setScale(3).setAlpha(0);
+                this.boundsCloak = this.physics.add.image(this.w * 0.30, this.w*0.47, "cloak").setScale(3).setAlpha(0);
             })
             .on('pointerout', () => {
                 this.cloak2.destroy()
-                this.bounds.destroy();
+                this.boundsCloak.destroy();
             })
             .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsCloak);
+                console.log(this.inZone);
                 if (this.inZone == true) {
                     this.showMessage("You pick up the cloak.");
                     this.gainItem('cloak');
@@ -104,13 +135,45 @@ class Scene1 extends AdventureScene {
                         alpha: { from: 1, to: 0 },
                         duration: 500,
                         onComplete: () => this.cloak.destroy(),
-                        onComplete: () => this.bounds.destroy(),
-                        // onComplete: () => this.inZone = false
+                        onComplete: () => this.boundsCloak.destroy(),
+                        onComplete: () => this.inZone = false,
                     });
                 } else {
                     this.showMessage("Get closer bozo. L + Ratio + no reach o_O")
                 }
             });
+
+
+        this.door = this.add.sprite(this.tile * 13.5, this.tile * 8, "door")
+            .setOrigin(0, 1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.doorOutline.setAlpha(1);
+                if (keyGot == false) {
+                    this.showMessage("A locked door...")
+                }
+                this.boundsDoor = this.physics.add.image(this.tile * 13.5, this.tile * 8, "cloak").setScale(3).setAlpha(0);
+            })
+            .on('pointerout', () => {
+                this.doorOutline.setAlpha(0)
+                this.boundsDoor.destroy()
+            })
+            .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsDoor);
+                if (this.inZone == true && this.inventory.includes('key')) {
+                    this.gotoScene(Scene2);
+
+                } else if (!this.inventory.includes('key')) {
+                    this.showMessage("You should probably get the key...")
+                } else {
+                    this.showMessage("Get closer.");
+                }
+            });
+
+        this.doorOutline = this.add.sprite(this.tile*13.5, this.tile *8, "doorOutline")
+            .setOrigin(0,1)
+            .setAlpha(0);
+        
 
         this.inZone = false;
 
@@ -138,11 +201,6 @@ class Scene1 extends AdventureScene {
             this.knight.setTexture('cloakedKnight');
         }
 
-        // console.log(this.inZone);
-        
-        checkBounds(this.knight, this.bounds);
-
-        
 
     }
 }
