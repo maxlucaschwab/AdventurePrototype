@@ -15,31 +15,41 @@ class AdventureScene extends Phaser.Scene {
         this.w = this.game.config.width;
         this.h = this.game.config.height;
         this.s = this.game.config.width * 0.01;
+        this.pixel = 6;
+        this.tile = this.pixel * 16;
+        console.log(this.tile);
 
-        this.cameras.main.setBackgroundColor('#444');
+        this.depth = 2;
+
+        // this.cameras.main.setBackgroundColor('#444');
         this.cameras.main.fadeIn(this.transitionDuration, 0, 0, 0);
 
-        this.add.rectangle(this.w * 0.75, 0, this.w * 0.25, this.h).setOrigin(0, 0).setFillStyle(0);
+        this.add.rectangle(this.w * 0.75, 0, this.w * 0.25, this.h).setOrigin(0, 0).setFillStyle(0).setDepth(this.depth);
         this.add.text(this.w * 0.75 + this.s, this.s)
             .setText(this.name)
             .setStyle({ fontSize: `${3 * this.s}px` })
-            .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
+            .setWordWrapWidth(this.w * 0.25 - 2 * this.s)
+            .setDepth(this.depth);
         
         this.messageBox = this.add.text(this.w * 0.75 + this.s, this.h * 0.33)
             .setStyle({ fontSize: `${2 * this.s}px`, color: '#eea' })
-            .setWordWrapWidth(this.w * 0.25 - 2 * this.s);
+            .setWordWrapWidth(this.w * 0.25 - 2 * this.s)
+            .setDepth(this.depth);
 
         this.inventoryBanner = this.add.text(this.w * 0.75 + this.s, this.h * 0.66)
             .setStyle({ fontSize: `${2 * this.s}px` })
             .setText("Inventory")
-            .setAlpha(0);
+            .setAlpha(0)
+            .setDepth(this.depth);
 
-        this.inventoryTexts = [];
-        this.updateInventory();
+        this.inventoryTexts = []
+
+        this.updateInventory(); 
 
         this.add.text(this.w-3*this.s, this.h-3*this.s, "📺")
             .setStyle({ fontSize: `${2 * this.s}px` })
             .setInteractive({useHandCursor: true})
+            .setDepth(this.depth)
             .on('pointerover', () => this.showMessage('Fullscreen?'))
             .on('pointerdown', () => {
                 if (this.scale.isFullscreen) {
@@ -85,7 +95,8 @@ class AdventureScene extends Phaser.Scene {
         this.inventory.forEach((e, i) => {
             let text = this.add.text(this.w * 0.75 + 2 * this.s, h, e)
                 .setStyle({ fontSize: `${1.5 * this.s}px` })
-                .setWordWrapWidth(this.w * 0.75 + 4 * this.s);
+                .setWordWrapWidth(this.w * 0.75 + 4 * this.s)
+                .setDepth(this.depth);
             h += text.height + this.s;
             this.inventoryTexts.push(text);
         });
@@ -136,6 +147,17 @@ class AdventureScene extends Phaser.Scene {
             this.updateInventory();
         });
     }
+
+
+    // new function added 1/2 modifications to adventure.js
+    checkBounds (target, bounds) {
+        if (this.physics.overlap(target, bounds)) {
+            this.inZone = true;
+            console.log(this.inZone);
+        } else {
+        this.inZone = false;
+        }
+    };
 
     gotoScene(key) {
         this.cameras.main.fade(this.transitionDuration, 0, 0, 0);

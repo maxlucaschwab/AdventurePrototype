@@ -1,69 +1,155 @@
-class Demo1 extends AdventureScene {
+class Scene1 extends AdventureScene {
     constructor() {
-        super("demo1", "First Room");
+        super("Scene1", "Bridge");
+    }
+    
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("bridgeL", "bridge_L.001.png");
+        this.load.image("bridgeR", "bridge_R.001.png");
+        this.load.image("knight", "knight.001.png");
+        this.load.image("troll", "troll.001.png");
+        this.load.image("tile", "tile.png");
+        this.load.image("cloak", "cloak.png");
+        this.load.image("cloakedKnight", "cloakedKnight.png");
+        this.load.image("cloak2", "cloakOutline.png");
+        this.load.image("trollKey", "trollWithKey.png");
+        this.load.image("trollOutline", "trollWithKeyOutline.png");
     }
 
     onEnter() {
+        
+        this.wall = [
+            this.add.image(this.tile * 13, this.tile * 8, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 7, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 6, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 5, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 4, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 3, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 2, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile * 1, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, this.tile, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 13, 0, "tile").setOrigin(0,0),
+        ]
 
-        let clip = this.add.text(this.w * 0.3, this.w * 0.3, "📎 paperclip")
-            .setFontSize(this.s * 2)
+        this.wall = [
+            this.add.image(this.tile * 14, this.tile * 8, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 7, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 6, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 5, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 4, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 3, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 2, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile * 1, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, this.tile, "tile").setOrigin(0,0),
+            this.add.image(this.tile * 14, 0, "tile").setOrigin(0,0),
+        ]
+
+        let bridge01 = this.add.image(this.tile * 0, this.tile * 8, "bridgeR")
+            .setOrigin(0, 0);
+        let bridge02 = this.add.image(this.tile * 4, this.tile * 8, "bridgeL")
+            .setOrigin(0, 0);
+        let bridge03 = this.add.image(this.tile * 8, this.tile * 8, "bridgeR")
+            .setOrigin(0, 0);
+        let bridge04 = this.add.image(this.tile * 12, this.tile * 8, "bridgeL")
+            .setOrigin(0, 0);
+        let bridge05 = this.add.image(this.tile * 16, this.tile * 8, "bridgeR")
+            .setOrigin(0, 0);
+
+        this.knight = this.physics.add.sprite(this.tile * 2, this.tile * 8, "knight")
+            .setOrigin(0, 1)
+            .setDepth(1)
+            .setCollideWorldBounds(true);
+        
+
+
+        this.troll01 = this.add.sprite(this.tile * 11.5, this.tile * 8, "trollKey")
+            .setOrigin(0, 1)
             .setInteractive()
-            .on('pointerover', () => this.showMessage("Metal, bent."))
+            .on('pointerover', () => {
+                this.showMessage("Looks like this goober has a key... Maybe there's a way to sneak it off him?")
+                this.trollOutline = this.add.image(this.tile*11.5, this.tile *8, "trollOutline")
+                this.trollOutline.setOrigin(0,1)
+            })
+            .on('pointerout', () => {
+                this.trollOutline.destroy()
+            });
+        
+        this.troll02 = this.add.sprite(this.tile * 12.5, this.tile * 8, "troll")
+            .setOrigin(0, 1)
+            .setDepth(2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("Gross Guy; Stinky"));
+
+        this.cloak = this.add.image(this.w * 0.30, this.w * 0.47, "cloak")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A raggedy cloak, perfect for sneaking.")
+                console.log("once");
+                this.cloak2 = this.add.image(this.w*0.30, this.w*0.47, "cloak2");
+                this.bounds = this.physics.add.image(this.w * 0.30, this.w*0.47, "cloak").setScale(3).setAlpha(0);
+            })
+            .on('pointerout', () => {
+                this.cloak2.destroy()
+                this.bounds.destroy();
+            })
             .on('pointerdown', () => {
-                this.showMessage("No touching!");
-                this.tweens.add({
-                    targets: clip,
-                    x: '+=' + this.s,
-                    repeat: 2,
-                    yoyo: true,
-                    ease: 'Sine.inOut',
-                    duration: 100
-                });
+                if (this.inZone == true) {
+                    this.showMessage("You pick up the cloak.");
+                    this.gainItem('cloak');
+                    this.cloak2.destroy()
+                    this.tweens.add({
+                        targets: this.cloak,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => this.cloak.destroy(),
+                        onComplete: () => this.bounds.destroy(),
+                        // onComplete: () => this.inZone = false
+                    });
+                } else {
+                    this.showMessage("Get closer bozo. L + Ratio + no reach o_O")
+                }
             });
 
-        let key = this.add.text(this.w * 0.5, this.w * 0.1, "🔑 key")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                this.showMessage("It's a nice key.")
-            })
-            .on('pointerdown', () => {
-                this.showMessage("You pick up the key.");
-                this.gainItem('key');
-                this.tweens.add({
-                    targets: key,
-                    y: `-=${2 * this.s}`,
-                    alpha: { from: 1, to: 0 },
-                    duration: 500,
-                    onComplete: () => key.destroy()
-                });
-            })
+        this.inZone = false;
 
-        let door = this.add.text(this.w * 0.1, this.w * 0.15, "🚪 locked door")
-            .setFontSize(this.s * 2)
-            .setInteractive()
-            .on('pointerover', () => {
-                if (this.hasItem("key")) {
-                    this.showMessage("You've got the key for this door.");
-                } else {
-                    this.showMessage("It's locked. Can you find a key?");
-                }
-            })
-            .on('pointerdown', () => {
-                if (this.hasItem("key")) {
-                    this.loseItem("key");
-                    this.showMessage("*squeak*");
-                    door.setText("🚪 unlocked door");
-                    this.gotoScene('demo2');
-                }
-            })
+    }
+
+    update() {
+
+        this.knight.setVelocity(0);
+        let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+
+        if (d.isDown) {
+            this.knight.setVelocityX(500);
+            this.knight.flipX = false;
+        }
+
+        if (a.isDown) {
+            this.knight.setVelocityX(-500);
+            this.knight.flipX = true;
+        }
+
+        // console.log(this.inventory);
+
+        if (this.inventory.includes('cloak')) {
+            this.knight.setTexture('cloakedKnight');
+        }
+
+        // console.log(this.inZone);
+        
+        checkBounds(this.knight, this.bounds);
+
+        
 
     }
 }
 
-class Demo2 extends AdventureScene {
+class Scene2 extends AdventureScene {
     constructor() {
-        super("demo2", "The second room has a long name (it truly does).");
+        super("Scene2", "Hallway");
     }
     onEnter() {
         this.add.text(this.w * 0.3, this.w * 0.4, "just go back")
@@ -73,7 +159,7 @@ class Demo2 extends AdventureScene {
                 this.showMessage("You've got no other choice, really.");
             })
             .on('pointerdown', () => {
-                this.gotoScene('demo1');
+                this.gotoScene('Scene1');
             });
 
         let finish = this.add.text(this.w * 0.6, this.w * 0.2, '(finish the game)')
@@ -101,7 +187,7 @@ class Intro extends Phaser.Scene {
         this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
-            this.time.delayedCall(1000, () => this.scene.start('demo1'));
+            this.time.delayedCall(1000, () => this.scene.start('Scene1'));
         });
     }
 }
@@ -123,9 +209,16 @@ const game = new Phaser.Game({
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
         width: 1920,
-        height: 1080
+        height: 1080,
     },
-    scene: [Intro, Demo1, Demo2, Outro],
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: true
+        }
+    },
+    backgroundColor: 0x87CEEB,
+    scene: [Scene1, Scene2, Outro],
     title: "Adventure Game",
 });
 
