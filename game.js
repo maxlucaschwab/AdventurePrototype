@@ -17,6 +17,7 @@ class Scene1 extends AdventureScene {
         this.load.image("trollOutline", "trollWithKeyOutline.png");
         this.load.image("door", "door.png");
         this.load.image("doorOutline", "doorOutline.png");
+        this.load.image("potKnight", "potKnight.png");
     }
 
     onEnter() {
@@ -67,6 +68,8 @@ class Scene1 extends AdventureScene {
             .setOrigin(0,1)
             .setAlpha(0);
         
+
+        this.inZone = false;
         let keyGot = false
         this.troll01 = this.add.sprite(this.tile * 11.5, this.tile * 8, "trollKey")
             .setOrigin(0, 1)
@@ -85,7 +88,7 @@ class Scene1 extends AdventureScene {
                 this.boundsTroll.destroy()
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsTroll, this.inZone);
+                this.checkBounds(this.knight, this.boundsTroll);
                 if (this.inZone == true && this.inventory.includes('Cloak')) {
                     this.showMessage("You steal the key.");
                     this.gainItem('Door Key');
@@ -102,7 +105,7 @@ class Scene1 extends AdventureScene {
                     this.showMessage("Get closer.");
                 }
             });
-        
+    
         this.troll02 = this.add.sprite(this.tile * 12.5, this.tile * 8, "troll")
             .setOrigin(0, 1)
             .setDepth(2)
@@ -122,7 +125,7 @@ class Scene1 extends AdventureScene {
                 this.boundsCloak.destroy();
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsCloak, this.inZone);
+                this.checkBounds(this.knight, this.boundsCloak);
                 console.log(this.inZone);
                 if (this.inZone == true) {
                     this.showMessage("You pick up the cloak.");
@@ -158,7 +161,7 @@ class Scene1 extends AdventureScene {
                 this.boundsDoor.destroy()
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsDoor, this.inZone);
+                this.checkBounds(this.knight, this.boundsDoor);
                 if (this.inZone == true && this.inventory.includes('Door Key')) {
                     this.loseItem("Cloak");
                     this.loseItem("Door Key");
@@ -197,9 +200,14 @@ class Scene1 extends AdventureScene {
         }
 
         // console.log(this.inventory);
+        // console.log(this.inZone);
 
         if (this.inventory.includes('Cloak')) {
             this.knight.setTexture('cloakedKnight');
+        }
+
+        if (this.inventory.includes('Pot')) {
+            this.knight.setTexture('potKnight');
         }
 
 
@@ -220,6 +228,7 @@ class Scene2 extends AdventureScene {
         this.load.image("path", "doorway.png");
         this.load.image("door", "door.png");
         this.load.image("doorOutline", "doorOutline.png");
+        this.load.image("potKnight", "potKnight.png");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
     }
@@ -262,7 +271,7 @@ class Scene2 extends AdventureScene {
                 this.boundsDoor1.destroy();
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsDoor1, this.inZone);
+                this.checkBounds(this.knight, this.boundsDoor1);
                 if (this.inZone == true) {
                     this.gotoScene("Scene3");
 
@@ -285,7 +294,7 @@ class Scene2 extends AdventureScene {
                 this.boundsDoor2.destroy();
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsDoor2,this.inZone);
+                this.checkBounds(this.knight, this.boundsDoor2);
                 if (this.inZone == true) {
                     this.gotoScene("Scene4");
 
@@ -315,10 +324,10 @@ class Scene2 extends AdventureScene {
                 this.boundsDoor.destroy()
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsDoor, this.inZone);
+                this.checkBounds(this.knight, this.boundsDoor);
                 if (this.inZone == true) {
-                    this.gainItem("cloak");
-                    this.gainItem("key");
+                    this.gainItem("Cloak");
+                    this.gainItem("Door Key");
                     this.gotoScene("Scene1");
 
                 } else {
@@ -345,6 +354,12 @@ class Scene2 extends AdventureScene {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
+
+        if (this.inventory.includes('Pot')) {
+            this.knight.setTexture('potKnight');
+        }
+
+        // console.log(this.inZone);
     }
 }
 
@@ -368,8 +383,11 @@ class Scene3 extends AdventureScene {
         this.load.image("key", "key.png");
         this.load.image("pot", "pot.png");
         this.load.image("keyOutline", "keyOutline.png");
+        this.load.image("potKnight", "potKnight.png");
+        this.load.image("potOutline", "potOutline.png");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
+        this.alert = false
         
     }
 
@@ -424,7 +442,7 @@ class Scene3 extends AdventureScene {
                 this.boundsDoor1.destroy();
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsDoor1, this.inZone);
+                this.checkBounds(this.knight, this.boundsDoor1);
                 if (this.inZone == true) {
                     this.gotoScene("Scene2");
 
@@ -442,27 +460,28 @@ class Scene3 extends AdventureScene {
             .on('pointerover', () => this.showMessage("Sleepy Guy; Yucko"))
             .setAngle(90);
 
-        console.log(this.alert);
+        
         // if (this.alert == true) () => {
         //     this.trollSleep.setAngle(0).setTexture("troll").flipX = true;
         // }
 
-
         this.keyOutline = this.add.sprite(this.tile*11.5, this.tile *8, "keyOutline")
             .setOrigin(0,1)
             .setAlpha(0);
-
+        
+        
         let potGot = false
         this.key = this.add.sprite(this.tile * 11.5, this.tile * 8, "key")
             .setOrigin(0, 1)
             .setInteractive()
             .on('pointerover', () => {
                 this.keyOutline.setAlpha(1);
+                this.showMessage("A key for the jail cell!")
                 if (potGot == false) {
-                    this.showMessage("The noise might wake the stonky guard up!")
+                    this.showMessage("A key for the jail cell! The noise might wake the stonky guard up.")
                     this.boundsKey = this.physics.add.image(this.tile * 11.5, this.tile * 8, "key").setAlpha(0).setOrigin(0,1);
                 } else {
-                    this.showMessage("A Stinkier guy. A cretin.")
+                    this.showMessage("A key for the jail cell!")
                 }
             })
             .on('pointerout', () => {
@@ -470,24 +489,73 @@ class Scene3 extends AdventureScene {
                 this.boundsKey.destroy()
             })
             .on('pointerdown', () => {
-                this.checkBounds(this.knight, this.boundsTroll, this.inZone);
-                if (this.inZone == true && this.inventory.includes('Cloak')) {
-                    this.showMessage("You steal the key.");
-                    this.gainItem('Door Key');
-                    this.troll01.setTexture('troll');
-                    this.trollOutline.setTexture('troll');
-                    this.trollOutline.destroy();
-                    this.boundsTroll.destroy();
-                    this.inZone = false;
-                    this.troll01 = this.troll02;
-                    keyGot = true
-                } else if (!this.inventory.includes('Cloak')) {
+                this.checkBounds(this.knight, this.boundsKey);
+                if (this.inZone == true && this.inventory.includes('Pot')) {
+                    this.showMessage("You take the key.");
+                    this.gainItem('Jail Key');
+                    this.trollSleep.setTexture('troll');
+                    this.trollSleep.setAngle(0);
+                    this.trollSleep.setOrigin(0,0.5); //makes the troll stand up straight and not ethereally float even though it's funny. Really janky plz forgive me.
+                    this.keyOutline.setAlpha(0);
+                    this.tweens.add({
+                        targets: this.key,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => this.key.destroy(),
+                        onComplete: () => this.boundsKey.destroy(),
+                        onComplete: () => this.keyOutline.destroy()
+                    });
+                console.log(this.inZone);
+                } else if (this.inZone == true) {
                     this.showMessage("You should probably get a disguise...")
+                    this.trollSleep.setTexture('troll');
+                    this.trollSleep.setAngle(0);
+                    this.trollSleep.setOrigin(0,0.5); //makes the troll stand up straight and not ethereally float even though it's funny. Really janky plz forgive me.
+                    this.cameras.main.fade(1000, 0,0,0);
+                    this.time.delayedCall(1000, () => this.scene.start('Scene3'));
                 } else {
                     this.showMessage("Get closer.");
                 }
             });
+
+        this.potOutline = this.add.sprite(this.tile*8, this.tile *9, "potOutline")
+            .setOrigin(0,1)
+            .setAlpha(0);
         
+        this.pot = this.add.image(this.tile*8, this.tile*9, "pot")
+            .setOrigin(0,1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A pot? In this economy?!")
+                this.potOutline.setAlpha(1);
+                console.log("once");
+                this.boundsPot = this.physics.add.image(this.tile*8, this.tile*9, "pot").setAlpha(0).setOrigin(0,1);
+            })
+            .on('pointerout', () => {
+                this.potOutline.setAlpha(0);
+                this.boundsPot.destroy();
+            })
+            .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsPot);
+                console.log(this.inZone);
+                if (this.inZone == true) {
+                    this.showMessage("You... get in the pot? Feeling creative are we...");
+                    this.gainItem('Pot');
+                    this.potOutline.destroy()
+                    this.tweens.add({
+                        targets: this.pot,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => this.pot.destroy(),
+                        onComplete: () => this.boundsPot.destroy(),
+                        onComplete: () => this.inZone = false,
+                    });
+                } else {
+                    this.showMessage("Get closer bozo. L + Ratio + no reach o_O")
+                }
+            });
         
     }
 
@@ -506,10 +574,124 @@ class Scene3 extends AdventureScene {
             this.knight.flipX = true;
         }
 
-        this.checkBounds(this.knight, this.trollSleep, this.alert);
+        if (this.inventory.includes('Pot')) {
+            this.knight.setTexture('potKnight');
+        }
+
+        // console.log(this.alert);
+
+        // this.checkBounds(this.knight, this.trollSleep, this.alert);
     }
 }
 
+class Scene4 extends AdventureScene {
+    constructor() {
+        super("Scene4", "Jail Cells");
+    }
+
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("knight", "knight.001.png");
+        this.load.image("tileLight", "tileLight.png");
+        this.load.image("tileMid", "tileMid.png");
+        this.load.image("tile", "tile.png");
+        this.load.image("arch", "arch.001.png");
+        this.load.image("path", "doorway.png");
+        this.load.image("bridgeL", "bridge_L.001.png");
+        this.load.image("bridgeR", "bridge_R.001.png");
+        this.load.image("potKnight", "potKnight.png");
+        this.gameWidth = this.cameras.main.width;
+        this.gameHeight = this.cameras.main.height;
+    }
+
+    onEnter() {
+
+        this.ceiling = [];
+        for (let width = 4; width < 15; width++) {
+            for (let height = 1; height < 9; height++) {
+                // console.log(height);
+                this.ceiling += this.add.image(this.tile * width, this.tile * height, "tile").setOrigin(0,0);
+            }
+        }
+
+        this.floor = [];
+        for (let width = 0; width < this.gameWidth/this.tile; width++) {
+            for (let height = 9; height < this.gameHeight/this.tile; height++) {
+                // console.log(height);
+                this.floor += this.add.image(this.tile * width, this.tile * height, "tileLight").setOrigin(0,0);
+            }
+        }
+
+        let bridge01 = this.add.image(this.tile * 3.5, this.tile * 0, "bridgeL")
+            .setOrigin(0, 0);
+
+        this.fill = [];
+        for (let width = 0; width < this.gameWidth/this.tile; width++){
+            this.fill += this.add.image(this.tile * width, 0, "tileLight").setOrigin(0,0);
+        }
+
+        this.fill2 = [];
+        for (let width = 0; width < 4; width++){
+            for (let height = 1; height < 3; height++){
+                this.fill2 += this.add.image(this.tile * width, this.tile * height, "tileLight").setOrigin(0,0);
+            }
+        }
+
+        this.knight = this.physics.add.sprite(this.tile * 2, this.tile * 9, "knight")
+            .setOrigin(0, 1)
+            .setDepth(1)
+            .setCollideWorldBounds(true);
+
+        let door1 = this.add.image(0, this.tile *3, "path")
+            .setOrigin(0,0)
+            .setInteractive()
+            .on('pointerover', () => {
+                door1.setTint(0xffd58b);
+                this.showMessage("Pathway to the hallway.");
+                this.boundsDoor1 = this.physics.add.image(0, this.tile * 3, "path").setAlpha(0).setOrigin(0,0);
+            })
+            .on('pointerout', () => {
+                door1.clearTint();
+                this.boundsDoor1.destroy();
+            })
+            .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsDoor1);
+                if (this.inZone == true) {
+                    this.gotoScene("Scene2");
+
+                } else {
+                    this.showMessage("Get closer.");
+                }
+            });
+        
+        let arch1 = this.add.image(0, this.tile *3, "arch").setOrigin(0,0);
+    }
+
+    update() {
+        this.knight.setVelocity(0);
+        let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
+
+        if (d.isDown) {
+            this.knight.setVelocityX(500);
+            this.knight.flipX = false;
+        }
+
+        if (a.isDown) {
+            this.knight.setVelocityX(-500);
+            this.knight.flipX = true;
+        }
+
+        if (this.inventory.includes('Pot')) {
+            this.knight.setTexture('potKnight');
+        }
+
+        // console.log(this.alert);
+
+        // this.checkBounds(this.knight, this.trollSleep, this.alert);
+    }
+
+}
 
 class Intro extends Phaser.Scene {
     constructor() {
@@ -551,7 +733,7 @@ const game = new Phaser.Game({
         }
     },
     backgroundColor: 0x87CEEB,
-    scene: [Scene3],
+    scene: [Scene2, Scene3, Scene4],
     title: "Adventure Game",
 });
 
