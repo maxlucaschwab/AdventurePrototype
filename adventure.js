@@ -150,13 +150,13 @@ class AdventureScene extends Phaser.Scene {
 
 
     // new function added 1/2 modifications to adventure.js
-    checkBounds(target, bounds) {
+    checkBounds(target, bounds, variable) {
         if (this.physics.overlap(target, bounds)) {
-            this.inZone = true;
-            console.log(this.inZone);
+            variable = true;
+            console.log(variable);
             // console.log("collide");
         } else {
-        this.inZone = false;
+        variable = false;
         }
     };
 
