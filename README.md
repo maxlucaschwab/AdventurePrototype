@@ -5,7 +5,7 @@ Code requirements:
 - **2+ scenes *not* based on `AdventureScene`**: unsatisfied (name the classes).
 - **2+ methods or other enhancement added to the adventure game engine to simplify my scenes**:
     - Enhancement 1: I added a function called `checkBounds()` which checks for collisions of two objects with physics specified in its arguments. It changes a variable from `false` to `true`.
-    - Enhancement 2: unsatisfied (name the method and explain the use of it).
+    - Enhancement 2: I created global variables to easily place the resized pixel art tiles.
 
 Experience requirements:
 - **4+ locations in the game world**: Scene1 (bridge), Scene2, (hallway), Scene3 (guard room), and Scene4 (jail cells).
