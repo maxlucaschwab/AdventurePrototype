@@ -18,9 +18,14 @@ class Scene1 extends AdventureScene {
         this.load.image("door", "door.png");
         this.load.image("doorOutline", "doorOutline.png");
         this.load.image("potKnight", "potKnight.png");
+        this.load.audio("stoneSlide", "stoneSlide.mp3");
     }
 
     onEnter() {
+
+        this.sfx = this.sound.add('stoneSlide', {
+            loop: true,
+        });
         
         this.wall = [
             this.add.image(this.tile * 13, this.tile * 8, "tile").setOrigin(0,0),
@@ -181,6 +186,7 @@ class Scene1 extends AdventureScene {
 
         this.inZone = false;
 
+
     }
 
     update() {
@@ -198,6 +204,38 @@ class Scene1 extends AdventureScene {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
+
+        if (a.isDown || d.isDown) {
+            if (this.isWalking !== true) {
+                this.sfx.play();
+                this.isWalking = true;
+                console.log("walking");
+            }
+        } else {
+            this.isWalking = false
+            this.sfx.stop();
+        }
+
+        // this.time.addEvent({
+        //     duration: 1396,
+        //     repeat: -1,
+        //     // callbackScope: this,
+        //     callback: function () {
+        //         if (this.isWalking == true) {
+        //             this.sfx.play();
+        //         }
+        //     }
+        // });
+
+        // if (a.isDown && this.isWalking === false ) {   
+        //     this.sfx.play();   
+        //     this.isWalking = true; 
+        //     console.log("playing");
+        //   } else {
+        //     this.sfx.stop();       
+        //     this.isWalking = false;
+            
+        // }
 
         // console.log(this.inventory);
         // console.log(this.inZone);
@@ -229,11 +267,16 @@ class Scene2 extends AdventureScene {
         this.load.image("door", "door.png");
         this.load.image("doorOutline", "doorOutline.png");
         this.load.image("potKnight", "potKnight.png");
+        this.load.audio("stoneSlide", "stoneSlide.mp3");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
     }
 
     onEnter() {
+
+        this.sfx = this.sound.add('stoneSlide', {
+            loop: true,
+        });
 
         console.log(this.gameWidth / this.tile);
 
@@ -359,6 +402,17 @@ class Scene2 extends AdventureScene {
             this.knight.setTexture('potKnight');
         }
 
+        if (a.isDown || d.isDown) {
+            if (this.isWalking !== true) {
+                this.sfx.play();
+                this.isWalking = true;
+                console.log("walking");
+            }
+        } else {
+            this.isWalking = false
+            this.sfx.stop();
+        }
+
         // console.log(this.inZone);
     }
 }
@@ -385,6 +439,7 @@ class Scene3 extends AdventureScene {
         this.load.image("keyOutline", "keyOutline.png");
         this.load.image("potKnight", "potKnight.png");
         this.load.image("potOutline", "potOutline.png");
+        this.load.audio("stoneSlide", "stoneSlide.mp3");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
         this.alert = false
@@ -392,6 +447,10 @@ class Scene3 extends AdventureScene {
     }
 
     onEnter() {
+
+        this.sfx = this.sound.add('stoneSlide', {
+            loop: true,
+        });
 
         this.ceiling = [];
         for (let width = 4; width < 15; width++) {
@@ -578,6 +637,17 @@ class Scene3 extends AdventureScene {
             this.knight.setTexture('potKnight');
         }
 
+        if (a.isDown || d.isDown) {
+            if (this.isWalking !== true) {
+                this.sfx.play();
+                this.isWalking = true;
+                console.log("walking");
+            }
+        } else {
+            this.isWalking = false
+            this.sfx.stop();
+        }
+
         // console.log(this.alert);
 
         // this.checkBounds(this.knight, this.trollSleep, this.alert);
@@ -605,11 +675,16 @@ class Scene4 extends AdventureScene {
         this.load.image("cageDoorOutline", "cageDoorOutline.png");
         this.load.image("cageDoorKey", "cageDoorKey.png");
         this.load.image("edwin", "edwin.png");
+        this.load.audio("stoneSlide", "stoneSlide.mp3");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
     }
 
     onEnter() {
+
+        this.sfx = this.sound.add('stoneSlide', {
+            loop: true,
+        });
 
         this.ceiling = [];
         for (let width = 4; width < 15; width++) {
@@ -762,6 +837,17 @@ class Scene4 extends AdventureScene {
 
         if (this.inventory.includes('Pot')) {
             this.knight.setTexture('potKnight');
+        }
+
+        if (a.isDown || d.isDown) {
+            if (this.isWalking !== true) {
+                this.sfx.play();
+                this.isWalking = true;
+                console.log("walking");
+            }
+        } else {
+            this.isWalking = false
+            this.sfx.stop();
         }
 
         // console.log(this.alert);
