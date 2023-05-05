@@ -141,7 +141,7 @@ class Scene1 extends AdventureScene {
                         onComplete: () => this.inZone = false,
                     });
                 } else {
-                    this.showMessage("Get closer bozo. L + Ratio + no reach o_O")
+                    this.showMessage("You're not close enough!")
                 }
             });
 
@@ -553,7 +553,7 @@ class Scene3 extends AdventureScene {
                         onComplete: () => this.inZone = false,
                     });
                 } else {
-                    this.showMessage("Get closer bozo. L + Ratio + no reach o_O")
+                    this.showMessage("You're not close enough!")
                 }
             });
         
@@ -586,7 +586,7 @@ class Scene3 extends AdventureScene {
 
 class Scene4 extends AdventureScene {
     constructor() {
-        super("Scene4", "Jail Cells");
+        super("Scene4", "Jail Room");
     }
 
     preload() {
@@ -600,6 +600,11 @@ class Scene4 extends AdventureScene {
         this.load.image("bridgeL", "bridge_L.001.png");
         this.load.image("bridgeR", "bridge_R.001.png");
         this.load.image("potKnight", "potKnight.png");
+        this.load.image("bars", "bars.png");
+        this.load.image("cageDoor", "cageDoor.png");
+        this.load.image("cageDoorOutline", "cageDoorOutline.png");
+        this.load.image("cageDoorKey", "cageDoorKey.png");
+        this.load.image("edwin", "edwin.png");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
     }
@@ -636,6 +641,79 @@ class Scene4 extends AdventureScene {
                 this.fill2 += this.add.image(this.tile * width, this.tile * height, "tileLight").setOrigin(0,0);
             }
         }
+
+        this.edwin = this.physics.add.sprite(this.tile * 12.5, this.tile * 9, "edwin")
+            .setOrigin(0, 1)
+            .setInteractive()
+            .on('pointerover', () => {
+                if (this.inventory.includes("Pot")) {
+                    this.showMessage("'Why are you in a pot?")
+                } else {
+                    this.showMessage("'You gonna get me out of here?'")
+                }
+            });
+
+        this.cage1 = []
+        for (let width = 12; width < 15; width++){
+            for (let height = 5; height < 9; height++){
+                this.cage1 += this.add.image(this.tile * width, this.tile * height, "bars").setOrigin(0,0);
+            }
+        }
+
+        this.cage2 = []
+        for (let height = 5; height < 9; height++){
+            this.cage2 += this.add.image(this.tile * 10, this.tile * height, "bars").setOrigin(0,0);
+        }
+
+        this.cage3 = []
+        for (let height = 5; height < 7; height++){
+            this.cage3 += this.add.image(this.tile * 11, this.tile * height, "bars").setOrigin(0,0);
+        }
+
+        // this.gainItem("Jail Key");
+        // this.gainItem("Pot");
+
+        this.cageDoor = this.add.sprite(this.tile*11, this.tile*9, "cageDoor")
+            .setOrigin(0,1)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A locked door.")
+                console.log("once");
+                this.cageDoorOutline.setAlpha(1);
+                this.boundsDoor = this.physics.add.image(this.tile*11, this.tile*9, "cageDoor").setScale(2).setAlpha(0).setOrigin(0,1);
+            })
+            .on('pointerout', () => {
+                this.cageDoorOutline.setAlpha(0);
+                this.boundsDoor.destroy();
+            })
+            .on('pointerdown', () => {
+                this.checkBounds(this.knight, this.boundsDoor);
+                console.log(this.inZone);
+                if (this.inZone == true && this.inventory.includes("Jail Key")) {
+                    this.loseItem('Jail Key');
+                    this.cageDoor.setTexture("cageDoorKey");
+                    this.cageDoorOutline.destroy()
+                    this.showMessage("'Huzzah!'")
+                    this.tweens.add({
+                        targets: this.cageDoor,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => this.cageDoor.destroy(),
+                        onComplete: () => this.boundsDoor.destroy(),
+                        onComplete: () => this.inZone = false,
+                        onComplete: () => this.time.delayedCall(1000, () => this.scene.start('outro'))
+                    });
+                } else if (this.inZone == true && !this.inventory.includes("Jail Key")){
+                    this.showMessage("'Gotta get that key first bub'")
+                } else {
+                    this.showMessage("'What are ya doing all the way over there?'")
+                }
+            });
+        
+        this.cageDoorOutline = this.add.sprite(this.tile*11, this.tile *9, "cageDoorOutline")
+            .setOrigin(0,1)
+            .setAlpha(0);
 
         this.knight = this.physics.add.sprite(this.tile * 2, this.tile * 9, "knight")
             .setOrigin(0, 1)
@@ -698,8 +776,8 @@ class Intro extends Phaser.Scene {
         super('intro')
     }
     create() {
-        this.add.text(50,50, "Adventure awaits!").setFontSize(50);
-        this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
+        this.add.text(50,50, "Adventure awaits!").setFontSize(50).setTint(0x000000);
+        this.add.text(50,100, "Click anywhere to begin.").setFontSize(20).setTint(0x000000);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('Scene1'));
@@ -712,8 +790,8 @@ class Outro extends Phaser.Scene {
         super('outro');
     }
     create() {
-        this.add.text(50, 50, "That's all!").setFontSize(50);
-        this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
+        this.add.text(50, 50, "That's all!").setFontSize(50).setTint(0x000000);
+        this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20).setTint(0x000000);
         this.input.on('pointerdown', () => this.scene.start('intro'));
     }
 }
@@ -729,11 +807,11 @@ const game = new Phaser.Game({
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true
+            // debug: true
         }
     },
     backgroundColor: 0x87CEEB,
-    scene: [Scene2, Scene3, Scene4],
+    scene: [Intro, Scene1, Scene2, Scene3, Scene4, Outro],
     title: "Adventure Game",
 });
 
