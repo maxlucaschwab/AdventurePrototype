@@ -67,23 +67,30 @@ class Scene1 extends AdventureScene {
         let bridge05 = this.add.image(this.tile * 16, this.tile * 8, "bridgeR")
             .setOrigin(0, 0);
         
+        
+        // knight avatar
             this.knight = this.physics.add.sprite(this.tile * 2, this.tile * 8, "knight")
             .setOrigin(0, 1)
             .setDepth(1)
             .setCollideWorldBounds(true);
 
+
+        // outline for hovering over troll sprite.
         this.trollOutline = this.add.sprite(this.tile*11.5, this.tile *8, "trollOutline")
             .setOrigin(0,1)
             .setAlpha(0);
         
 
+        // variables for determining collision and item pre-reqs
         this.inZone = false;
-        let keyGot = false
+        let keyGot = false;
+        // logic for troll sprite
         this.troll01 = this.add.sprite(this.tile * 11.5, this.tile * 8, "trollKey")
             .setOrigin(0, 1)
             .setInteractive()
             .on('pointerover', () => {
                 this.trollOutline.setAlpha(1);
+                // adds an invisible "bounds" field for player interaction.
                 if (keyGot == false) {
                     this.showMessage("Looks like this goober has a key... Maybe there's a way to sneak it off him?")
                     this.boundsTroll = this.physics.add.image(this.tile * 11.5, this.tile * 8, "cloak").setScale(3).setAlpha(0);
@@ -96,7 +103,9 @@ class Scene1 extends AdventureScene {
                 this.boundsTroll.destroy()
             })
             .on('pointerdown', () => {
+                // checks if knight is in boundaries
                 this.checkBounds(this.knight, this.boundsTroll);
+                // checks if cloaked, if so, player gets key and troll texture is changed
                 if (this.inZone == true && this.inventory.includes('Cloak')) {
                     this.showMessage("You steal the key.");
                     this.gainItem('Door Key');
@@ -113,13 +122,17 @@ class Scene1 extends AdventureScene {
                     this.showMessage("Get closer.");
                 }
             });
-    
+
+        
+        // second troll
         this.troll02 = this.add.sprite(this.tile * 12.5, this.tile * 8, "troll")
             .setOrigin(0, 1)
             .setDepth(2)
             .setInteractive()
             .on('pointerover', () => this.showMessage("Gross Guy; Stinky"));
+        
 
+        // cloak logic, similar principles to troll01
         this.cloak = this.add.image(this.w * 0.30, this.w * 0.47, "cloak")
             .setInteractive()
             .on('pointerover', () => {
@@ -153,7 +166,7 @@ class Scene1 extends AdventureScene {
                 }
             });
 
-
+        // door logic, similar principles to cloak and troll. This is repeated a lot in this code.
         this.door = this.add.sprite(this.tile * 13.5, this.tile * 8, "door")
             .setOrigin(0, 1)
             .setInteractive()
@@ -174,6 +187,7 @@ class Scene1 extends AdventureScene {
                     this.loseItem("Cloak");
                     this.loseItem("Door Key");
                     this.gotoScene("Scene2");
+                    // changes to next scene
 
                 } else if (!this.inventory.includes('Door Key')) {
                     this.showMessage("You should probably get the key...")
@@ -193,6 +207,8 @@ class Scene1 extends AdventureScene {
 
     update() {
 
+        // sets movement for the knight
+
         this.knight.setVelocity(0);
         let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -206,6 +222,8 @@ class Scene1 extends AdventureScene {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
+
+        // plays looping stone grinding noise while knight is moving
 
         if (a.isDown || d.isDown || this.leftPress == true || this.rightPress == true) {
             if (this.isWalking !== true) {
@@ -242,6 +260,8 @@ class Scene1 extends AdventureScene {
         // console.log(this.inventory);
         // console.log(this.inZone);
 
+
+        // changes knight texture depending on inventory selection
         if (this.inventory.includes('Cloak')) {
             this.knight.setTexture('cloakedKnight');
         }
@@ -283,6 +303,8 @@ class Scene2 extends AdventureScene {
 
         console.log(this.gameWidth / this.tile);
 
+        
+        // nested for loops to create the walls and floor of the room out of tiles.
         this.ceiling = [];
         for (let width = 0; width < this.gameWidth/this.tile; width++) {
             for (let height = 0; height < 9; height++) {
@@ -291,6 +313,7 @@ class Scene2 extends AdventureScene {
             }
         }
         
+        // // nested for loops to create the walls and floor of the room out of tiles.
         this.floor = [];
         for (let width = 0; width < this.gameWidth/this.tile; width++) {
             for (let height = 9; height < this.gameHeight/this.tile; height++) {
@@ -299,6 +322,8 @@ class Scene2 extends AdventureScene {
             }
         }
 
+
+        // more of the same
         this.knight = this.physics.add.sprite(this.tile * 2, this.tile * 9, "knight")
             .setOrigin(0, 1)
             .setDepth(1)
