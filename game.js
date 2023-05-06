@@ -442,6 +442,7 @@ class Scene3 extends AdventureScene {
         this.load.image("potKnight", "potKnight.png");
         this.load.image("potOutline", "potOutline.png");
         this.load.audio("stoneSlide", "stoneSlide.mp3");
+        this.load.audio("feddy", "feddy.mp3");
         this.gameWidth = this.cameras.main.width;
         this.gameHeight = this.cameras.main.height;
         this.alert = false
@@ -453,6 +454,8 @@ class Scene3 extends AdventureScene {
         this.sfx = this.sound.add('stoneSlide', {
             loop: true,
         });
+
+        this.feddy = this.sound.add('feddy');
 
         this.ceiling = [];
         for (let width = 4; width < 15; width++) {
@@ -574,6 +577,7 @@ class Scene3 extends AdventureScene {
                     this.trollSleep.setAngle(0);
                     this.trollSleep.setOrigin(0,0.5); //makes the troll stand up straight and not ethereally float even though it's funny. Really janky plz forgive me.
                     this.cameras.main.fade(1000, 0,0,0);
+                    this.feddy.play();
                     this.time.delayedCall(1000, () => this.scene.start('Scene3'));
                 } else {
                     this.showMessage("Get closer.");
