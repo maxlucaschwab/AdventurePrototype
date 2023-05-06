@@ -9,6 +9,7 @@ class Scene1 extends AdventureScene {
         this.load.image("bridgeR", "bridge_R.001.png");
         this.load.image("knight", "knight.001.png");
         this.load.image("troll", "troll.001.png");
+        this.load.image("tileLight", "tileLight.png");
         this.load.image("tile", "tile.png");
         this.load.image("cloak", "cloak.png");
         this.load.image("cloakedKnight", "cloakedKnight.png");
@@ -188,7 +189,6 @@ class Scene1 extends AdventureScene {
 
         this.inZone = false;
 
-
     }
 
     update() {
@@ -197,17 +197,17 @@ class Scene1 extends AdventureScene {
         let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
 
-        if (d.isDown) {
+        if (d.isDown || this.rightPress == true) {
             this.knight.setVelocityX(500);
             this.knight.flipX = false;
         }
 
-        if (a.isDown) {
+        if (a.isDown || this.leftPress == true) {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
 
-        if (a.isDown || d.isDown) {
+        if (a.isDown || d.isDown || this.leftPress == true || this.rightPress == true) {
             if (this.isWalking !== true) {
                 this.sfx.play();
                 this.isWalking = true;
@@ -263,6 +263,7 @@ class Scene2 extends AdventureScene {
         this.load.path = "./assets/";
         this.load.image("knight", "knight.001.png");
         this.load.image("tileLight", "tileLight.png");
+        this.load.image("tile", "tile.png");
         this.load.image("tileMid", "tileMid.png");
         this.load.image("arch", "arch.001.png");
         this.load.image("path", "doorway.png");
@@ -390,12 +391,12 @@ class Scene2 extends AdventureScene {
         let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
 
-        if (d.isDown) {
+        if (d.isDown || this.rightPress == true) {
             this.knight.setVelocityX(500);
             this.knight.flipX = false;
         }
 
-        if (a.isDown) {
+        if (a.isDown || this.leftPress == true) {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
@@ -404,7 +405,7 @@ class Scene2 extends AdventureScene {
             this.knight.setTexture('potKnight');
         }
 
-        if (a.isDown || d.isDown) {
+        if (a.isDown || d.isDown || this.leftPress == true || this.rightPress == true) {
             if (this.isWalking !== true) {
                 this.sfx.play();
                 this.isWalking = true;
@@ -629,12 +630,12 @@ class Scene3 extends AdventureScene {
         let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
 
-        if (d.isDown) {
+        if (d.isDown || this.rightPress == true) {
             this.knight.setVelocityX(500);
             this.knight.flipX = false;
         }
 
-        if (a.isDown) {
+        if (a.isDown || this.leftPress == true) {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
@@ -643,7 +644,7 @@ class Scene3 extends AdventureScene {
             this.knight.setTexture('potKnight');
         }
 
-        if (a.isDown || d.isDown) {
+        if (a.isDown || d.isDown || this.leftPress == true || this.rightPress == true) {
             if (this.isWalking !== true) {
                 this.sfx.play();
                 this.isWalking = true;
@@ -831,12 +832,12 @@ class Scene4 extends AdventureScene {
         let d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
         let a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
 
-        if (d.isDown) {
+        if (d.isDown || this.rightPress == true) {
             this.knight.setVelocityX(500);
             this.knight.flipX = false;
         }
 
-        if (a.isDown) {
+        if (a.isDown || this.leftPress == true) {
             this.knight.setVelocityX(-500);
             this.knight.flipX = true;
         }
@@ -845,7 +846,7 @@ class Scene4 extends AdventureScene {
             this.knight.setTexture('potKnight');
         }
 
-        if (a.isDown || d.isDown) {
+        if (a.isDown || d.isDown || this.leftPress == true || this.rightPress == true) {
             if (this.isWalking !== true) {
                 this.sfx.play();
                 this.isWalking = true;

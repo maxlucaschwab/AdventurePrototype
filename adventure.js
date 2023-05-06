@@ -10,6 +10,11 @@ class AdventureScene extends Phaser.Scene {
         this.name = name;
     }
 
+    // preload() {
+    //     this.load.image("tile", "tileLight.png");
+    //     this.load.image("tileDark", "tile.png");
+    // }
+
     create() {
         this.transitionDuration = 1000;
 
@@ -61,6 +66,30 @@ class AdventureScene extends Phaser.Scene {
             });
 
         this.onEnter();
+            
+        this.leftPress = false
+        this.left = this.add.sprite(600, 200, "tileLight")
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.left.setTint(0xFF0000);
+                this.leftPress = true
+            })
+            .on('pointerup', () => {
+                this.left.clearTint()
+                this.leftPress = false
+            })
+
+        this.rightPress = false
+        this.right = this.add.sprite(800, 200, "tileLight")
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.right.setTint(0xFF0000);
+                this.rightPress = true
+            })
+            .on('pointerup', () => {
+                this.right.clearTint()
+                this.rightPress = false
+            })
 
     }
 
