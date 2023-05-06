@@ -26,6 +26,8 @@ class Scene1 extends AdventureScene {
         this.sfx = this.sound.add('stoneSlide', {
             loop: true,
         });
+
+        this.add.text(50,50, "Use 'A' and 'D' to move!").setFontSize(60).setTint(0x000000);
         
         this.wall = [
             this.add.image(this.tile * 13, this.tile * 8, "tile").setOrigin(0,0),
