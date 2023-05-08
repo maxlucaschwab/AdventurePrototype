@@ -896,6 +896,7 @@ class Intro extends Phaser.Scene {
     create() {
         this.add.text(50,50, "Jail Break!").setFontSize(50).setTint(0x000000);
         this.add.text(50,100, "Click anywhere to begin.").setFontSize(20).setTint(0x000000);
+        this.isWalking = false
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('Scene1'));
@@ -911,6 +912,7 @@ class Outro extends Phaser.Scene {
         this.add.text(50, 50, "That's all!").setFontSize(50).setTint(0x000000);
         this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20).setTint(0x000000);
         this.input.on('pointerdown', () => this.scene.start('intro'));
+        this.isWalking = false
     }
 }
 
